@@ -1,7 +1,7 @@
-DMAR benchmark reproduction
+Proposed solution details - https://docs.google.com/document/d/1H9iBHOUo-DxjXVHIbuHGcFhOiLCdhyu_p5ek8Bvi4eQ/edit?usp=sharing
 
-This repository contains a benchmark for Greedy exploration, DMAR, and
-capacity-aware CA-DMAR-R.
+This repository contains a benchmark for Greedy exploration, DMAR(original paper), and
+capacity-aware CA-DMAR-R (The proposed solution).
 
 Requirements
 
@@ -37,6 +37,35 @@ Each command uses:
 - alpha values 0.25, 0.5, and 0.75
 - exhausted-agent mode 1
 - current SOAC policy and capacity-weighted assignment
+
+Mode definitions
+
+The exhausted-agent mode controls what an agent does after its remaining
+capacity reaches zero:
+
+- mode 0: the exhausted agent continues random exploration
+- mode 1: the exhausted agent stops moving, but still participates in
+  clustering and map aggregation
+- mode 2: the exhausted agent uses frontier exploration
+
+The benchmark script uses exhausted-agent mode 1. This enforces the capacity
+constraint: an exhausted agent is not dispatched for task completion or task
+movement, but remains available to contribute observations and map
+aggregation.
+
+The SOAC mode controls cluster membership behavior:
+
+- mode 0: current capacity-aware SOAC policy
+- mode 1: communication-only membership for exhausted agents
+- mode 2: original-style membership with eligible agents planning tasks
+- mode 3: original-style membership with all cluster members planning
+
+The assignment mode controls task assignment:
+
+- mode 0: capacity-weighted assignment
+- mode 1: greedy capacity-constrained assignment
+
+The benchmark script uses SOAC mode 0 and assignment mode 0.
 
 The script runs the benchmark separately for maximum sides 10, 20, and 30.
 Therefore each output file contains only its named map size. The executable
@@ -78,68 +107,94 @@ map aggregation. It must not be dispatched for task completion or movement.
 
 Current results
 
-The following results summarize the benchmark CSV files generated in this
-repository. Movement is total movement per run, not movement per round.
+The EDA notebook (`benchmark_eda.ipynb`) analyzes the nine benchmark files:
+9,720 rows, 45 independent map layouts (15 per map side), eight sensing
+radii, three runs per scenario, and a 5,000-round cap. Confidence intervals
+in the notebook are bootstrapped over the 45 layouts rather than over
+individual rows, because radii and runs reuse each layout.
+
+The following results are instance-level means. Movement is total movement per
+run, not movement per round.
 
 All-map aggregate:
 
-    algorithm    completion    median movement    median rounds    timeout rate
-    greedy       60.1 percent  485                1964             39.9 percent
-    dmar         62.2 percent  456                1930             37.8 percent
-    ca_dmar_r    85.0 percent  688                575              15.0 percent
+    algorithm    completion    mean unresolved tasks    mean rounds
+    greedy       58.3 percent  1.132                   2864
+    dmar         60.0 percent  1.010                   2820
+    ca_dmar_r    80.6 percent  0.371                   2005
 
-Results by map size:
+CA-DMAR-R improves completion over DMAR by 20.6 percentage points
+(95% bootstrap CI: 16.2 to 25.3 points), and is better on 39 of 45 layouts
+(tied on four and worse on two). On matched scenarios, 27% finish only with
+CA-DMAR-R, while 6.5% finish only with DMAR.
 
-    map      algorithm    completion    median movement    median rounds
-    10x10    greedy       61.7 percent  77.5               395
-    10x10    dmar         65.0 percent  74                 283
-    10x10    ca_dmar_r    92.2 percent  106.5              90
+The completion gain does not imply lower total cost. Among scenarios where
+both algorithms finish, CA-DMAR-R uses 1.17 times DMAR's total movement
+(95% CI: 1.08 to 1.27) and 1.14 times its rounds (1.03 to 1.27). Its
+task-serving movement is lower, at 0.93 times DMAR's (0.91 to 0.96), but
+96-97% of all movement is exploration.
 
-    20x20    greedy       62.2 percent  1604               2002.5
-    20x20    dmar         63.1 percent  1350               2456.5
-    20x20    ca_dmar_r    84.0 percent  2088               1307
+CA-DMAR-R by alpha
 
-    30x30    greedy       51.1 percent  5505               4925
-    30x30    dmar         51.9 percent  5588.5             4684
-    30x30    ca_dmar_r    65.6 percent  6329               3757.5
-
-CA-DMAR-R by alpha:
-
-    map      alpha    completion    median movement    median rounds
-    10x10    0.25     92.2 percent  102.5              91.5
-    10x10    0.50     92.2 percent  101.5              89
-    10x10    0.75     92.2 percent  110                89.5
-
-    20x20    0.25     83.6 percent  2109               1333.5
-    20x20    0.50     84.2 percent  2058               1294.5
-    20x20    0.75     84.2 percent  2082.5             1301
-
-    30x30    0.25     65.0 percent  6513               3806.5
-    30x30    0.50     65.0 percent  6429               3757.5
-    30x30    0.75     66.9 percent  6060               3701
+    alpha    completion
+    0.25     80.3 percent
+    0.50     80.5 percent
+    0.75     81.1 percent
 
 Interpretation
 
-CA-DMAR-R completes substantially more runs and reaches completion in fewer
-rounds, but it generally uses more total movement. Greedy and DMAR have lower
-typical movement but hit the 5,000-step limit more often.
+CA-DMAR-R completes substantially more runs, but it generally uses more total
+movement when both algorithms finish. The data is consistent with a reduction
+in stalling rather than a demonstrated benefit from capacity weighting.
 
-Performance degrades as the map grows. The advantage of CA-DMAR-R remains
-visible on 30x30 maps, although all algorithms have many timeout runs.
+Baseline failure rates increase with sensing radius: DMAR rises from 27% at
+radius 1 to 69% at radius 8, while CA-DMAR-R falls from 30% to 12%. On 10x10
+maps at radius 8, the corresponding rates are 87% for DMAR and 7% for
+CA-DMAR-R. At radius 6 and above, failed baseline runs contain only about 1%
+moving agent-rounds, compared with 3-4% for CA-DMAR-R.
 
-Alpha has little effect on Greedy and DMAR. Alpha 0.5 is a reasonable general
-default for CA-DMAR-R. Alpha 0.75 is slightly better in the current 30x30
-results.
+There are two failure regimes: large maps with small radii are
+exploration-limited by the 5,000-round cap, while large radii produce
+stall-limited baseline failures. Three layouts fail for every algorithm in
+every scenario, so the observed completion ceiling is approximately 93%.
 
-Capacity validation
+Alpha has little detectable effect. The benchmark gives every agent the same
+capacity (0.5, 1, or 2 tasks per agent), so `(remaining capacity / agent
+capacity)^alpha` is identical across eligible agents. Results are identical
+across alpha in all 0.5- and 1-task-per-agent scenarios; only 2-tasks-per-agent
+scenarios differ. This benchmark therefore does not test the capacity-weighted
+score.
 
-Across the completed benchmark files:
+Capacity and measurement caveats
+
+Across the analyzed benchmark files:
 
 - capacity violations were zero
 - exhausted-agent movement was zero
 - exhausted clustered-agent movement was zero
-- exhausted agents still observed tasks in most runs
+- exhausted agents were counted as cluster members in 99% of rows
+- exhausted-agent rounds were present in 100% of rows
 
-Use completion rate, timeout rate, median movement, median rounds, and
-unresolved tasks together. Mean movement is strongly affected by timeout
-outliers.
+The exhausted-agent counters are internally inconsistent: exhausted agents are
+counted as cluster members, but `exhausted_movement` and
+`exhausted_clustered_rounds` are zero in every row while
+`exhausted_exploration` is set everywhere. Verify these counters in the
+simulator before using them.
+
+The benchmark has zero capacity slack: total capacity equals task count, so
+each unresolved task is also one unused capacity unit. Unfinished runs are
+right-censored at 5,000 rounds; their movement and round counts are lower
+bounds. Compare cost and rounds conditionally on both algorithms finishing.
+`rounds_with_clusters` is a cluster-round count rather than a round count and
+is misleadingly named. `rejected_assignments` is heavy-tailed and likely
+includes repeated per-round rejections.
+
+The notebook data uses constant `soac_mode`, `assignment_mode`, and
+`exhausted_exploration`, so it contains no ablation evidence for the
+individual CA-DMAR-R modifications. See
+`docs/exploratory_paths.md` for proposed diagnostics, heterogeneous-capacity
+experiments, ablations, and higher-cap round-cap runs.
+
+Use completion rate, unresolved tasks, censoring rate, and conditional
+movement/rounds together. Uncensored movement and rounds are lower bounds for
+failed runs, and means are strongly affected by timeout outliers.
