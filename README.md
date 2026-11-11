@@ -1,5 +1,7 @@
 Proposed solution details - https://docs.google.com/document/d/1H9iBHOUo-DxjXVHIbuHGcFhOiLCdhyu_p5ek8Bvi4eQ/edit?usp=sharing
 
+This work is extention of the problem posed in the paper : https://arxiv.org/abs/2305.15596
+
 This repository contains a benchmark for Greedy exploration, DMAR(original paper), and
 capacity-aware CA-DMAR-R (The proposed solution).
 
