@@ -11,7 +11,13 @@
 
 namespace dmar {
 
-enum class Algorithm { CC_DMAR, GreedyExploration, CA_DMAR_RW };
+enum class Algorithm {
+    CC_DMAR,
+    GreedyExploration,
+    CA_DMAR_RW,
+    // Baseline with only exhausted-agent leader exclusion enabled.
+    CC_DMAR_LE
+};
 enum class ExhaustedExploration { Random, Stop, Frontier };
 enum class SoacPolicy {
     CurrentCapacityAware,

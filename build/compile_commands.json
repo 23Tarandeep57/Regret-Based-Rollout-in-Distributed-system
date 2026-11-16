@@ -1,0 +1,62 @@
+[
+{
+  "directory": "/home/taran/project/Btech_Project/build",
+  "command": "/usr/bin/g++ -I/home/taran/project/Btech_Project/include -g -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/dmar_core.dir/src/environment.cpp.o -c /home/taran/project/Btech_Project/src/environment.cpp",
+  "file": "/home/taran/project/Btech_Project/src/environment.cpp",
+  "output": "/home/taran/project/Btech_Project/build/CMakeFiles/dmar_core.dir/src/environment.cpp.o"
+},
+{
+  "directory": "/home/taran/project/Btech_Project/build",
+  "command": "/usr/bin/g++ -I/home/taran/project/Btech_Project/include -g -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/dmar_core.dir/src/clustering.cpp.o -c /home/taran/project/Btech_Project/src/clustering.cpp",
+  "file": "/home/taran/project/Btech_Project/src/clustering.cpp",
+  "output": "/home/taran/project/Btech_Project/build/CMakeFiles/dmar_core.dir/src/clustering.cpp.o"
+},
+{
+  "directory": "/home/taran/project/Btech_Project/build",
+  "command": "/usr/bin/g++ -I/home/taran/project/Btech_Project/include -g -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/dmar_core.dir/src/policies.cpp.o -c /home/taran/project/Btech_Project/src/policies.cpp",
+  "file": "/home/taran/project/Btech_Project/src/policies.cpp",
+  "output": "/home/taran/project/Btech_Project/build/CMakeFiles/dmar_core.dir/src/policies.cpp.o"
+},
+{
+  "directory": "/home/taran/project/Btech_Project/build",
+  "command": "/usr/bin/g++ -I/home/taran/project/Btech_Project/include -g -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/dmar_core.dir/src/rollout.cpp.o -c /home/taran/project/Btech_Project/src/rollout.cpp",
+  "file": "/home/taran/project/Btech_Project/src/rollout.cpp",
+  "output": "/home/taran/project/Btech_Project/build/CMakeFiles/dmar_core.dir/src/rollout.cpp.o"
+},
+{
+  "directory": "/home/taran/project/Btech_Project/build",
+  "command": "/usr/bin/g++ -I/home/taran/project/Btech_Project/include -g -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/dmar_core.dir/src/scenarios.cpp.o -c /home/taran/project/Btech_Project/src/scenarios.cpp",
+  "file": "/home/taran/project/Btech_Project/src/scenarios.cpp",
+  "output": "/home/taran/project/Btech_Project/build/CMakeFiles/dmar_core.dir/src/scenarios.cpp.o"
+},
+{
+  "directory": "/home/taran/project/Btech_Project/build",
+  "command": "/usr/bin/g++ -I/home/taran/project/Btech_Project/include -g -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/dmar_core.dir/src/simulator.cpp.o -c /home/taran/project/Btech_Project/src/simulator.cpp",
+  "file": "/home/taran/project/Btech_Project/src/simulator.cpp",
+  "output": "/home/taran/project/Btech_Project/build/CMakeFiles/dmar_core.dir/src/simulator.cpp.o"
+},
+{
+  "directory": "/home/taran/project/Btech_Project/build",
+  "command": "/usr/bin/g++ -I/home/taran/project/Btech_Project/include -g -std=c++17 -Wall -Wextra -Wpedantic -o CMakeFiles/dmar_core.dir/src/state.cpp.o -c /home/taran/project/Btech_Project/src/state.cpp",
+  "file": "/home/taran/project/Btech_Project/src/state.cpp",
+  "output": "/home/taran/project/Btech_Project/build/CMakeFiles/dmar_core.dir/src/state.cpp.o"
+},
+{
+  "directory": "/home/taran/project/Btech_Project/build",
+  "command": "/usr/bin/g++ -I/home/taran/project/Btech_Project/include -g -std=c++17 -o CMakeFiles/dmar_core_tests.dir/tests/test_core.cpp.o -c /home/taran/project/Btech_Project/tests/test_core.cpp",
+  "file": "/home/taran/project/Btech_Project/tests/test_core.cpp",
+  "output": "/home/taran/project/Btech_Project/build/CMakeFiles/dmar_core_tests.dir/tests/test_core.cpp.o"
+},
+{
+  "directory": "/home/taran/project/Btech_Project/build",
+  "command": "/usr/bin/g++ -I/home/taran/project/Btech_Project/include -g -std=c++17 -o CMakeFiles/dmar_experiments.dir/src/experiments.cpp.o -c /home/taran/project/Btech_Project/src/experiments.cpp",
+  "file": "/home/taran/project/Btech_Project/src/experiments.cpp",
+  "output": "/home/taran/project/Btech_Project/build/CMakeFiles/dmar_experiments.dir/src/experiments.cpp.o"
+},
+{
+  "directory": "/home/taran/project/Btech_Project/build",
+  "command": "/usr/bin/g++ -I/home/taran/project/Btech_Project/include -g -std=c++17 -o CMakeFiles/dmar_benchmark.dir/src/benchmark.cpp.o -c /home/taran/project/Btech_Project/src/benchmark.cpp",
+  "file": "/home/taran/project/Btech_Project/src/benchmark.cpp",
+  "output": "/home/taran/project/Btech_Project/build/CMakeFiles/dmar_benchmark.dir/src/benchmark.cpp.o"
+}
+]

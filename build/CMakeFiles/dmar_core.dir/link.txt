@@ -1,0 +1,2 @@
+/usr/bin/ar qc libdmar_core.a CMakeFiles/dmar_core.dir/src/environment.cpp.o CMakeFiles/dmar_core.dir/src/clustering.cpp.o CMakeFiles/dmar_core.dir/src/policies.cpp.o CMakeFiles/dmar_core.dir/src/rollout.cpp.o CMakeFiles/dmar_core.dir/src/scenarios.cpp.o CMakeFiles/dmar_core.dir/src/simulator.cpp.o CMakeFiles/dmar_core.dir/src/state.cpp.o
+/usr/bin/ranlib libdmar_core.a

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20261110-1912-Experimental"
+	Name="(empty)"
+	Generator="ctest-4.3.0"
+	CompilerName=""
+	CompilerVersion=""
+	OSName="Linux"
+	Hostname="fedora"
+	OSRelease="7.2.15-200.fc44.x86_64"
+	OSVersion="#1 SMP PREEMPT_DYNAMIC Sun Nov  1 16:10:54 UTC 2026"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="AuthenticAMD"
+	VendorID="Advanced Micro Devices"
+	FamilyID="25"
+	ModelID="68"
+	ModelName="AMD Ryzen 5 7535U with Radeon Graphics"
+	ProcessorCacheSize="512"
+	NumberOfLogicalCPU="12"
+	NumberOfPhysicalCPU="6"
+	TotalVirtualMemory="8191"
+	TotalPhysicalMemory="15176"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="4007.351074"
+	>
+	<Testing>
+		<StartDateTime>Nov 16 15:46 IST</StartDateTime>
+		<StartTestTime>1794824175</StartTestTime>
+		<TestList/>
+		<EndDateTime>Nov 16 15:46 IST</EndDateTime>
+		<EndTestTime>1794824175</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

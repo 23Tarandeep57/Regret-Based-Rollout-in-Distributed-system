@@ -38,6 +38,7 @@ const char* algorithm_name(dmar::Algorithm algorithm) {
     case dmar::Algorithm::GreedyExploration: return "greedy";
     case dmar::Algorithm::CA_DMAR_RW: return "ca_dmar_r";
     case dmar::Algorithm::CC_DMAR: return "dmar";
+    case dmar::Algorithm::CC_DMAR_LE: return "dmar_le";
     }
     return "unknown";
 }
@@ -90,14 +91,17 @@ int main(int argc, char** argv) {
     const int trace_side = argument_or_default(argc, argv, 11, 0);
     const int trace_ratio = argument_or_default(argc, argv, 12, -1);
     const int trace_radius = argument_or_default(argc, argv, 13, 0);
+    const int algorithm_mode = argument_or_default(argc, argv, 14, 0);
     if (max_side < 10 || instances <= 0 || runs <= 0 || max_rounds <= 0 ||
-        max_sensing_radius <= 0 || alpha < 0.0 || alpha > 1.0) {
+        max_sensing_radius <= 0 || alpha < 0.0 || alpha > 1.0 ||
+        algorithm_mode < 0 || algorithm_mode > 3) {
         std::cerr << "usage: dmar_benchmark [max_side>=10] [instances] [runs] [max_rounds] "
                      "[max_sensing_radius] [alpha in 0..1] "
                      "[exhausted_mode 0=random,1=stop,2=frontier] [debug] "
                      "[soac_mode 0=current,1=communication-only,2=all-members-eligible,3=all-members-planning] "
                      "[assignment_mode 0=capacity-weighted,1=greedy-capacity] "
-                     "[trace_side] [trace_ratio_index] [trace_radius]\n";
+                     "[trace_side] [trace_ratio_index] [trace_radius] "
+                     "[algorithm_mode 0=all,1=CA-DMAR-R-only,2=non-CA-only,3=DMAR-LE-only]\n";
         return EXIT_FAILURE;
     }
 
@@ -166,7 +170,14 @@ int main(int argc, char** argv) {
                     state = generate_scenario(scenario);
                     for (int run = 0; run < runs; ++run) {
                         for (const auto algorithm : {Algorithm::GreedyExploration, Algorithm::CC_DMAR,
-                                                     Algorithm::CA_DMAR_RW}) {
+                                                     Algorithm::CC_DMAR_LE, Algorithm::CA_DMAR_RW}) {
+                            const bool is_ca = algorithm == Algorithm::CA_DMAR_RW;
+                            const bool is_dmar_le = algorithm == Algorithm::CC_DMAR_LE;
+                            if ((algorithm_mode == 1 && !is_ca) ||
+                                (algorithm_mode == 2 && is_ca) ||
+                                (algorithm_mode == 3 && !is_dmar_le)) {
+                                continue;
+                            }
                             SimulatorConfig config;
                             config.algorithm = algorithm;
                             config.alpha = alpha;

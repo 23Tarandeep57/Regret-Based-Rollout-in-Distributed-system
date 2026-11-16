@@ -23,12 +23,13 @@ struct Cluster {
     double pressure = 0.0;              // P_K = N_K / R_K (0 when R_K == 0)
 };
 
-// `capacity_aware` enables both CA-SOAC modifications: only agents with r_i > 0 may become
-// leaders, and an agent choosing among several joinable clusters prefers the highest
-// pressure P_K = N_K / R_K (ties broken by lowest leader ID). When false, behaves as the
-// capacity-unaware baseline.
+// Two independent CA-SOAC modifications (both false = capacity-unaware baseline):
+//  * `capacity_leaders`: only agents with r_i > 0 may become leaders.
+//  * `pressure_guided`: an agent choosing among several joinable clusters prefers the highest
+//    pressure P_K = N_K / R_K (ties broken by lowest leader ID).
 std::vector<Cluster> form_soac_clusters(
-    const SimulationState& state, int psi, int child_limit, bool capacity_aware = false);
+    const SimulationState& state, int psi, int child_limit,
+    bool capacity_leaders = false, bool pressure_guided = false);
 void aggregate_local_maps(const SimulationState& state, std::vector<Cluster>& clusters);
 
 }  // namespace dmar

@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/dmar_benchmark.dir/link.d CMakeFiles/dmar_benchmark.dir/src/benchmark.cpp.o -o dmar_benchmark  libdmar_core.a

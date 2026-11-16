@@ -1,0 +1,7 @@
+/home/taran/project/Btech_Project/build/CMakeFiles/dmar_core.dir
+/home/taran/project/Btech_Project/build/CMakeFiles/dmar_core_tests.dir
+/home/taran/project/Btech_Project/build/CMakeFiles/dmar_experiments.dir
+/home/taran/project/Btech_Project/build/CMakeFiles/dmar_benchmark.dir
+/home/taran/project/Btech_Project/build/CMakeFiles/test.dir
+/home/taran/project/Btech_Project/build/CMakeFiles/edit_cache.dir
+/home/taran/project/Btech_Project/build/CMakeFiles/rebuild_cache.dir

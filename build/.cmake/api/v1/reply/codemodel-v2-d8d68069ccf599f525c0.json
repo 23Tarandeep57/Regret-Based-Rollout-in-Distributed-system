@@ -1,0 +1,88 @@
+{
+	"configurations" : 
+	[
+		{
+			"abstractTargets" : [],
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-fd6451d79dc282e2f566.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "dmar_simulator",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "dmar_benchmark::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dmar_benchmark-Debug-88c881e430793d2af6da.json",
+					"name" : "dmar_benchmark",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "dmar_core::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dmar_core-Debug-9683c83526ae1053b639.json",
+					"name" : "dmar_core",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "dmar_core_tests::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dmar_core_tests-Debug-2b865e16fa161898ba1f.json",
+					"name" : "dmar_core_tests",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "dmar_experiments::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dmar_experiments-Debug-c3278c71656fbd2e9aed.json",
+					"name" : "dmar_experiments",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/taran/project/Btech_Project/build",
+		"source" : "/home/taran/project/Btech_Project"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	}
+}

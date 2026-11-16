@@ -99,7 +99,9 @@ Metrics run_simulation(SimulationState state, const SimulatorConfig& config) {
     Metrics metrics;
     std::mt19937 random(config.seed);
     const bool capacity_aware = config.algorithm == Algorithm::CA_DMAR_RW;
-    const bool capacity_aware_soac =
+    const bool capacity_leaders =
+        capacity_aware || config.algorithm == Algorithm::CC_DMAR_LE;
+    const bool pressure_guided =
         capacity_aware &&
         config.soac_policy != SoacPolicy::OriginalStyleEligible &&
         config.soac_policy != SoacPolicy::OriginalStyleAllMembers;
@@ -128,7 +130,7 @@ Metrics run_simulation(SimulationState state, const SimulatorConfig& config) {
         // Capacity exhaustion is a termination condition: nobody can complete another task.
         if (capacity_aware && total_remaining_capacity(state) == 0) break;
         std::vector<Cluster> clusters = form_soac_clusters(
-            state, config.psi, config.child_limit, capacity_aware_soac);
+            state, config.psi, config.child_limit, capacity_leaders, pressure_guided);
         if (had_clusters && clusters.empty()) ++metrics.cluster_dissolutions;
         had_clusters = !clusters.empty();
         aggregate_local_maps(state, clusters);

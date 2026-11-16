@@ -71,6 +71,22 @@ The script runs the benchmark separately for maximum sides 10, 20, and 30.
 Therefore each output file contains only its named map size. The executable
 prints progress to stderr and CSV data to stdout.
 
+The script avoids redundant alpha runs: Greedy, DMAR, and `dmar_le` are
+computed once and reused, while CA-DMAR-R is computed separately for each
+alpha. The executable's final optional argument controls this selection:
+`0` runs all algorithms, `1` runs only CA-DMAR-R, and `2` runs only the
+non-CA baselines; `3` runs only `dmar_le`.
+
+If the existing benchmark CSVs already contain the original algorithms, use
+`add_dmar_le.sh` to calculate and append only the new ablation:
+
+```bash
+./add_dmar_le.sh
+```
+
+The script is idempotent and skips files that already contain the expected
+`dmar_le` rows.
+
 Optional environment variables
 
 The defaults can be changed without editing the script:

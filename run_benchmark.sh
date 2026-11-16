@@ -18,16 +18,44 @@ for alpha in 0.25 0.5 0.75; do
     for side in 10 20 30; do
         output="$ROOT_DIR/benchmark-${side}x${side}-alpha-${alpha}.csv"
         echo "Writing $output" >&2
-        "$BUILD_DIR/dmar_benchmark" \
-            "$side" \
-            "$INSTANCES" \
-            "$RUNS" \
-            "$MAX_ROUNDS" \
-            "$MAX_SENSING_RADIUS" \
-            "$alpha" \
-            1 \
-            0 > "$TEMP_OUTPUT"
-        awk -F, -v side="$side" 'NR == 1 || $2 == side' "$TEMP_OUTPUT" > "$output"
+        if [[ "$alpha" == "0.25" ]]; then
+            # Baselines do not depend on alpha. Run them once using the first
+            # alpha value and reuse their rows in all output files.
+            "$BUILD_DIR/dmar_benchmark" \
+                "$side" \
+                "$INSTANCES" \
+                "$RUNS" \
+                "$MAX_ROUNDS" \
+                "$MAX_SENSING_RADIUS" \
+                "$alpha" \
+                1 \
+                0 \
+                0 \
+                0 \
+                0 \
+                -1 \
+                0 \
+                2 > "$TEMP_OUTPUT"
+            awk -F, -v side="$side" 'NR == 1 || $2 == side' "$TEMP_OUTPUT" > "$output"
+        else
+            # Only CA-DMAR-R needs to be recomputed for each alpha.
+            "$BUILD_DIR/dmar_benchmark" \
+                "$side" \
+                "$INSTANCES" \
+                "$RUNS" \
+                "$MAX_ROUNDS" \
+                "$MAX_SENSING_RADIUS" \
+                "$alpha" \
+                1 \
+                0 \
+                0 \
+                0 \
+                0 \
+                -1 \
+                0 \
+                1 > "$TEMP_OUTPUT"
+            awk -F, -v side="$side" 'NR > 1 && $2 == side' "$TEMP_OUTPUT" >> "$output"
+        fi
     done
 done
 

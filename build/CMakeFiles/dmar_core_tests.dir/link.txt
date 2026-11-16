@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/dmar_core_tests.dir/link.d CMakeFiles/dmar_core_tests.dir/tests/test_core.cpp.o -o dmar_core_tests  libdmar_core.a

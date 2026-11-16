@@ -47,13 +47,14 @@ ClusterLoad cluster_load(const SimulationState& state, const std::vector<std::si
 }  // namespace
 
 std::vector<Cluster> form_soac_clusters(
-    const SimulationState& state, int psi, int child_limit, bool capacity_aware) {
+    const SimulationState& state, int psi, int child_limit,
+    bool capacity_leaders, bool pressure_guided) {
     if (psi <= 0 || child_limit <= 0) return {};
 
-    // Leader election. In capacity-aware mode an exhausted agent can neither be a leader nor
+    // Leader election. With capacity_leaders an exhausted agent can neither be a leader nor
     // disqualify a neighbour from leading (it can still be recruited below).
     const auto eligible_leader = [&](const Agent& agent) {
-        if (capacity_aware && !agent.can_perform_task()) return false;
+        if (capacity_leaders && !agent.can_perform_task()) return false;
         return sees_task(state, agent);
     };
     std::vector<std::size_t> leaders;
@@ -94,8 +95,8 @@ std::vector<Cluster> form_soac_clusters(
                     });
                 if (!joinable) continue;
                 const double pressure =
-                    capacity_aware ? cluster_load(state, cluster.agent_indices).pressure : 0.0;
-                // Higher pressure wins; equal pressure (always, in baseline mode) falls back
+                    pressure_guided ? cluster_load(state, cluster.agent_indices).pressure : 0.0;
+                // Higher pressure wins; equal pressure (always, without pressure guidance) falls back
                 // to the lowest leader ID.
                 if (best_cluster == clusters.size() || pressure > best_pressure ||
                     (pressure == best_pressure &&
@@ -113,7 +114,7 @@ std::vector<Cluster> form_soac_clusters(
 
     // Deterministic approximation of Algorithm 1's cluster-join phase:
     // an unclustered agent that sees multiple clusters roots their merge.
-    // The merged cluster keeps the lowest-ID existing leader, so in capacity-aware mode the
+    // The merged cluster keeps the lowest-ID existing leader, so with capacity_leaders the
     // merged cluster is still rooted at an agent with r_i > 0.
     for (std::size_t agent_index = 0; agent_index < state.agents().size(); ++agent_index) {
         if (assigned[agent_index]) continue;
