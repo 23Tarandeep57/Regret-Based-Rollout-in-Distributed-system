@@ -140,11 +140,11 @@ run, not movement per round.
 
 All-map aggregate:
 
-    algorithm    completion    mean unresolved tasks    mean rounds
-    greedy       58.3 percent  1.132                   2864
-    dmar         60.0 percent  1.010                   2820
-    dmar_le      80.5 percent  0.370                   2065
-    ca_dmar_r    80.6 percent  0.371                   2005
+    algorithm    completion    mean unresolved tasks   mean movement
+    greedy       58.3 percent  1.132                    3069
+    dmar         60.0 percent  1.010                    3098
+    dmar_le      80.5 percent  0.370                    3616
+    ca_dmar_r    80.6 percent  0.371                    3503
 
 CA-DMAR-R has 20.6 percentage points higher completion than DMAR
 (95% bootstrap CI: 16.2 to 25.3 points), and is better on 39 of 45 layouts
@@ -153,13 +153,7 @@ CA-DMAR-R, while 6.5% finish only with DMAR.
 
 The fair ablation `dmar_le` adds only the rule that exhausted agents cannot
 be cluster leaders. It reaches 80.5% completion versus CA-DMAR-R's 80.6%
-(paired difference +0.2 points, 95% CI -1.8 to +2.2; Wilcoxon `p = 0.84`).
-
-The completion gain does not imply lower total cost. Among scenarios where
-both algorithms finish, CA-DMAR-R uses 1.17 times DMAR's total movement
-(95% CI: 1.08 to 1.27) and 1.14 times its rounds (1.03 to 1.27). Its
-task-serving movement is lower, at 0.93 times DMAR's (0.91 to 0.96), but
-96-97% of all movement is exploration.
+(Statistically insignificant difference)
 
 Against the fair `dmar_le` baseline, among matched scenarios where both
 algorithms finish, CA-DMAR-R uses 0.90 times the total movement (**10.0%
