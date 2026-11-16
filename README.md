@@ -79,6 +79,10 @@ alpha. The executable's final optional argument controls this selection:
 `0` runs all algorithms, `1` runs only CA-DMAR-R, and `2` runs only the
 non-CA baselines; `3` runs only `dmar_le`.
 
+An optional fifteenth argument sets a custom tasks-per-agent ratio for a
+focused run. For example, append `10` to run only the 10-tasks-per-agent
+scenario instead of the default three ratios.
+
 If the existing benchmark CSVs already contain the original algorithms, use
 `add_dmar_le.sh` to calculate and append only the new ablation:
 
@@ -126,7 +130,7 @@ map aggregation. It must not be dispatched for task completion or movement.
 Current results
 
 The EDA notebook (`benchmark_eda.ipynb`) analyzes the nine benchmark files:
-9,720 rows, 45 independent map layouts (15 per map side), eight sensing
+12,960 rows, 45 independent map layouts (15 per map side), eight sensing
 radii, three runs per scenario, and a 5,000-round cap. Confidence intervals
 in the notebook are bootstrapped over the 45 layouts rather than over
 individual rows, because radii and runs reuse each layout.
@@ -139,18 +143,29 @@ All-map aggregate:
     algorithm    completion    mean unresolved tasks    mean rounds
     greedy       58.3 percent  1.132                   2864
     dmar         60.0 percent  1.010                   2820
+    dmar_le      80.5 percent  0.370                   2065
     ca_dmar_r    80.6 percent  0.371                   2005
 
-CA-DMAR-R improves completion over DMAR by 20.6 percentage points
+CA-DMAR-R has 20.6 percentage points higher completion than DMAR
 (95% bootstrap CI: 16.2 to 25.3 points), and is better on 39 of 45 layouts
 (tied on four and worse on two). On matched scenarios, 27% finish only with
 CA-DMAR-R, while 6.5% finish only with DMAR.
+
+The fair ablation `dmar_le` adds only the rule that exhausted agents cannot
+be cluster leaders. It reaches 80.5% completion versus CA-DMAR-R's 80.6%
+(paired difference +0.2 points, 95% CI -1.8 to +2.2; Wilcoxon `p = 0.84`).
 
 The completion gain does not imply lower total cost. Among scenarios where
 both algorithms finish, CA-DMAR-R uses 1.17 times DMAR's total movement
 (95% CI: 1.08 to 1.27) and 1.14 times its rounds (1.03 to 1.27). Its
 task-serving movement is lower, at 0.93 times DMAR's (0.91 to 0.96), but
 96-97% of all movement is exploration.
+
+Against the fair `dmar_le` baseline, among matched scenarios where both
+algorithms finish, CA-DMAR-R uses 0.90 times the total movement (**10.0%
+fewer steps**, bootstrap CI 0.845-0.961) and 0.857 times the rounds (**14.3%
+fewer rounds**, CI 0.783-0.938). On 20x20 maps the measured differences are about 16.5% fewer steps and 20.9%
+fewer rounds. Task-serving movement is 1.039 times `dmar_le`.
 
 CA-DMAR-R by alpha
 
@@ -159,29 +174,85 @@ CA-DMAR-R by alpha
     0.50     80.5 percent
     0.75     81.1 percent
 
-Interpretation
-
-CA-DMAR-R completes substantially more runs, but it generally uses more total
-movement when both algorithms finish. The data is consistent with a reduction
-in stalling rather than a demonstrated benefit from capacity weighting.
-
-Baseline failure rates increase with sensing radius: DMAR rises from 27% at
+Baseline failure rates by sensing radius were: DMAR 27% at
 radius 1 to 69% at radius 8, while CA-DMAR-R falls from 30% to 12%. On 10x10
 maps at radius 8, the corresponding rates are 87% for DMAR and 7% for
 CA-DMAR-R. At radius 6 and above, failed baseline runs contain only about 1%
 moving agent-rounds, compared with 3-4% for CA-DMAR-R.
 
-There are two failure regimes: large maps with small radii are
-exploration-limited by the 5,000-round cap, while large radii produce
-stall-limited baseline failures. Three layouts fail for every algorithm in
-every scenario, so the observed completion ceiling is approximately 93%.
+Three layouts failed for every algorithm in every scenario, giving an observed
+completion ceiling of approximately 93% in that dataset.
 
-Alpha has little detectable effect. The benchmark gives every agent the same
+The benchmark gave every agent the same
 capacity (0.5, 1, or 2 tasks per agent), so `(remaining capacity / agent
 capacity)^alpha` is identical across eligible agents. Results are identical
 across alpha in all 0.5- and 1-task-per-agent scenarios; only 2-tasks-per-agent
 scenarios differ. This benchmark therefore does not test the capacity-weighted
 score.
+
+Additional experiments
+
+The following focused experiments use different map sizes, agent counts,
+capacity profiles, or numbers of layouts than the main protocol.
+
+30x30 high-density uniform-capacity experiment:
+
+- 10 agents, 50 tasks, 5 tasks per agent
+- 2 instances, 1 run per instance, sensing radii 1-8
+- 16 rows per algorithm
+
+    algorithm    completion    cap hits    mean rounds    mean movement
+    greedy       43.8 percent  9/16        4155           7383
+    dmar         75.0 percent  4/16        3484           6983
+    dmar_le      62.5 percent  6/16        3564           6696
+    ca_dmar_r    62.5 percent  6/16        3964           6770
+
+30x30 heterogeneous-capacity experiment:
+
+- 10 agents, 50 tasks, 5 tasks per agent
+- 2 instances, 1 run per instance, sensing radii 1-8
+- total initial capacity 56
+
+    algorithm    completion    cap hits    mean rounds    mean movement
+    greedy       50.0 percent  8/16        3472           6329
+    dmar         50.0 percent  8/16        3761           7063
+    dmar_le      81.2 percent  3/16        2811           5388
+    ca_dmar_r    75.0 percent  4/16        2682           4806
+
+30x30 moderate-spread capacity/alpha matrix:
+
+- 10 agents, 50 tasks, 5 tasks per agent
+- total initial capacity 54
+- 10 instances, 3 runs per instance, sensing radii 1-8
+- `dmar_le` and CA-DMAR-R only
+- alpha values 0, 0.5, and 1
+- 240 rows per algorithm and alpha
+
+    alpha    algorithm    completion    cap hits    mean rounds    mean movement
+    0        dmar_le      69.2 percent  75/240      3051           6148
+    0        ca_dmar_r    70.0 percent  72/240      2972           5875
+    0.5      dmar_le      69.2 percent  75/240      3051           6148
+    0.5      ca_dmar_r    67.5 percent  78/240      3093           5887
+    1        dmar_le      69.2 percent  75/240      3051           6148
+    1        ca_dmar_r    69.6 percent  73/240      3072           5902
+
+For paired completed runs in this matrix, CA-DMAR-R used 4.0% fewer rounds
+at alpha 0, approximately equal rounds at alpha 0.5, and 1.9% fewer rounds
+at alpha 1. Movement was approximately 4% lower for CA-DMAR-R at all three
+alpha values.
+
+20x20 high-density file:
+
+- 20 agents, 200 tasks, 10 tasks per agent
+- 5 instances, 3 runs per instance, sensing radii 1-8
+- 438 valid rows and one null-byte-corrupted row block
+- aggregates are based on valid rows only
+
+    algorithm    completion    mean rounds    mean movement
+    greedy       28.4 percent  3972           2942
+    dmar         26.6 percent  4094           3400
+    dmar_le      70.9 percent  2439           4115
+    ca_dmar_r    70.9 percent  2434           4019
 
 Capacity and measurement caveats
 
@@ -203,9 +274,9 @@ The benchmark has zero capacity slack: total capacity equals task count, so
 each unresolved task is also one unused capacity unit. Unfinished runs are
 right-censored at 5,000 rounds; their movement and round counts are lower
 bounds. Compare cost and rounds conditionally on both algorithms finishing.
-`rounds_with_clusters` is a cluster-round count rather than a round count and
-is misleadingly named. `rejected_assignments` is heavy-tailed and likely
-includes repeated per-round rejections.
+`rounds_with_clusters` is a cluster-round count rather than a round count.
+`rejected_assignments` is heavy-tailed and includes repeated per-round
+rejections.
 
 The notebook data uses constant `soac_mode`, `assignment_mode`, and
 `exhausted_exploration`, so it contains no ablation evidence for the
